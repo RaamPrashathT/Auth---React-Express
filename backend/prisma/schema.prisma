@@ -1,0 +1,29 @@
+datasource db {
+    provider = "postgresql"
+}
+
+generator client {
+    provider = "prisma-client-js"
+    output   = "../generated/prisma"
+}
+
+model User {
+    id            String    @id @default(cuid())
+    username      String
+    email         String    @unique
+    emailVerified Boolean   @default(false)
+    createdAt     DateTime  @default(now())
+    updatedAt     DateTime  @updatedAt
+    accounts      Account[]
+}
+
+model Account {
+    id                String  @id @default(cuid())
+    userId            String
+    provider          String
+    providerAccountID String
+    password          String?
+    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountID])
+}
