@@ -1,12 +1,17 @@
-import express from "express";
+import express from 'express';
+import authRouter from './modules/auth/auth.routes.js';
+
+const PORT = process.env.PORT || 5000;
+
 const app = express();
-const port = "3000";
+app.use(express.json());
+app.use("/auth", authRouter);
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-  console.log("Response sent");
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
 
-app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`);
-});
+app.get('/', (_req, res) => {
+  res.status(200).json({"message": "Server is running"})
+})
+
