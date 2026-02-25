@@ -4,15 +4,17 @@ import { tokenSchema } from "../types.js";
 const access_secret = new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET);
 const refresh_secret = new TextEncoder().encode(process.env.REFRESH_TOKEN_SECRET);
 
-export const createAccessToken = async (payload: { userId: string, email: string}) => {
+type TokenType = "access" | "refresh";
+
+export const createAccessToken = async (payload: { userId: string, email: string, tokenType: TokenType}) => {
     return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
-        .setExpirationTime("10m")
+        .setExpirationTime("1m")
         .sign(access_secret);
 }
 
-export const createRefreshToken = async (payload: { userId: string, email: string}) => {
+export const createRefreshToken = async (payload: { userId: string, email: string, tokenType: TokenType}) => {
     return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()

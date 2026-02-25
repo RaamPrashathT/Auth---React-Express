@@ -1,9 +1,11 @@
-import { hash } from "node:crypto";
 import generateName from "../../shared/lib/generateName.js";
 import { prisma } from "../../shared/lib/prisma.js";
 import type { LoginInput, RegisterInput } from "./auth.schema.js";
 import bcrypt from "bcryptjs";
-import { createAccessToken } from "../../shared/lib/auth.js";
+import {
+    createAccessToken,
+    createRefreshToken,
+} from "../../shared/lib/auth.js";
 
 export const authService = {
     async register(data: RegisterInput) {
@@ -47,24 +49,24 @@ export const authService = {
             },
         });
 
-        return {message: "User registered successfully", userId: newUser.id};
+        return { message: "User registered successfully", userId: newUser.id };
     },
 
     async login(data: LoginInput) {
         const existingUser = await prisma.user.findUnique({
             where: { email: data.email },
             include: { accounts: true },
-        })
+        });
 
-        if(!existingUser) {
+        if (!existingUser) {
             throw new Error("Invalid email or password");
         }
 
         const passwordAccount = existingUser.accounts.find(
-            (account) => account.provider === "credentials"
+            (account) => account.provider === "credentials",
         );
 
-        if(!passwordAccount) {
+        if (!passwordAccount) {
             throw new Error("Invalid email or password");
         }
 
@@ -72,21 +74,25 @@ export const authService = {
 
         const isPasswordCorrect = await bcrypt.compare(
             data.password,
-            hashedPassword!
+            hashedPassword!,
         );
 
-        if(!isPasswordCorrect) {
+        if (!isPasswordCorrect) {
             throw new Error("Invalid email or password");
         }
-        
-        try {
-            const token = await createAccessToken({
-                userId: existingUser.id,
-                email: existingUser.email,
-            })
 
-            
-        }
+        const accessToken = await createAccessToken({
+            userId: existingUser.id,
+            email: existingUser.email,
+            tokenType: "access",
+        });
 
-    }
+        const refreshToken = await createRefreshToken({
+            userId: existingUser.id,
+            email: existingUser.email,
+            tokenType: "refresh",
+        });
+
+        return { accessToken, refreshToken };
+    },
 };

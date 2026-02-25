@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
+import { useAuth } from "./authContext";
 // import { GoogleOAuthButton } from "../oAuth/GoogleOAuthButton";
 
 type LoginFormState = {
@@ -32,6 +33,7 @@ const initialState: LoginFormState = {
 type ResponseSchema = {
     success: boolean;
     message: string;
+    accessToken?: string;
 }
 
 type Action =
@@ -81,6 +83,7 @@ export function LoginForm({
 }: React.ComponentProps<"form">) {
     const [state, dispatch] = useReducer(reducer, initialState);
     const navigate = useNavigate();
+    const auth = useAuth();
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -105,9 +108,8 @@ export function LoginForm({
 
             const response = await fetch("http://localhost:5000/auth/login", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
                 body: JSON.stringify(request)
             });
 
@@ -118,25 +120,28 @@ export function LoginForm({
                     type: "SUBMIT_FAILURE",
                     payload: responseData.message,
                 });
+                return;
             }
 
-            console.log(responseData);
             if (responseData.success) {
                 dispatch({
                     type: "SUBMIT_SUCCESS",
-                });
+                }); 
+                auth.setAccessToken((responseData).accessToken ?? null);
                 navigate("/dashboard");
             } else {
                 dispatch({
                     type: "SUBMIT_FAILURE",
                     payload: responseData.message,
                 });
+                return
             }
         } catch (error) {
             dispatch({
                 type: "SUBMIT_FAILURE",
                 payload: "Something went wrong" + error,
             });
+            return
         }
     };
 

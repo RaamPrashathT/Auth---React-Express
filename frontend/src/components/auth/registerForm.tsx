@@ -139,6 +139,7 @@ export function RegisterForm({
                     type: "SUBMIT_FAILURE",
                     payload: responseData.message,
                 });
+                ;
             }
         } catch (error) {
             dispatch({
