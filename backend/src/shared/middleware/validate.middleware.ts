@@ -11,6 +11,7 @@ export const validate =
                 message: "Validation failed",
                 errors: z.flattenError(validatedData.error).fieldErrors,
             })
+            return;
         }
         request.body = validatedData.data;
         next();
