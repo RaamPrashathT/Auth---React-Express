@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import { authService } from "./auth.service.js";
-import type { RegisterInput } from "./auth.schema.js";
-import { success } from "zod";
+import type { LoginInput, RegisterInput } from "./auth.schema.js";
+import { createAccessToken } from "../../shared/lib/auth.js";
 
 export const authController = {
     async register(request: Request, response: Response) {
@@ -35,4 +35,12 @@ export const authController = {
                 .json({ success: false, message: "Internal server error" });
         }
     },
+
+    async login(request: Request, response: Response) {
+        try {
+            const result = await authService.login(request.body as LoginInput);
+
+            
+        }
+    }
 };
