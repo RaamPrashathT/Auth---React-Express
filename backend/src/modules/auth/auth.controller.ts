@@ -44,11 +44,10 @@ export const authController = {
             const { accessToken, refreshToken } = await authService.login(
                 request.body as LoginInput,
             );
-            console.log(refreshToken);
             response.cookie("refreshToken", refreshToken, {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "strict",
+                secure: false,
+                sameSite: "lax",
                 maxAge: 7 * 24 * 60 * 60 * 1000,
                 path: "/auth",
             });
@@ -101,8 +100,8 @@ export const authController = {
         try {
             response.clearCookie("refreshToken", {
                 httpOnly: true,
-                secure: process.env.NODE_ENV === "production",
-                sameSite: "strict",
+                secure: false,
+                sameSite: "lax",
                 path: "/auth",
             });
             return response.status(200).json({

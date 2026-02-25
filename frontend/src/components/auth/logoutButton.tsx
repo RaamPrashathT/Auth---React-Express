@@ -5,7 +5,7 @@ import { useAuth } from "./authContext";
 export const LogoutButton = () => {
     const auth = useAuth();
     const navigate = useNavigate();
-
+    
     const handleLogout = async () => {
         auth.setAccessToken(null);
         await fetch("http://localhost:5000/auth/logout", {

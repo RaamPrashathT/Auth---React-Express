@@ -1,6 +1,7 @@
 import express from "express";
 import authRouter from "./modules/auth/auth.routes.js";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 
 const PORT = process.env.PORT || 5000;
 
@@ -10,7 +11,7 @@ app.use(cors({
   credentials: true
 }));
 
-
+app.use(cookieParser());
 app.use(express.json());
 app.use("/auth", authRouter);
 
