@@ -49,7 +49,7 @@ export const authController = {
                 secure: false,
                 sameSite: "lax",
                 maxAge: 7 * 24 * 60 * 60 * 1000,
-                path: "/auth",
+                path: "/",
             });
 
             return response.status(200).json({
@@ -102,7 +102,7 @@ export const authController = {
                 httpOnly: true,
                 secure: false,
                 sameSite: "lax",
-                path: "/auth",
+                path: "/",
             });
             return response.status(200).json({
                 success: true,

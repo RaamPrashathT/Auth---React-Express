@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
-import { useAuth } from "./authContext";
+import { useAuth } from "../../contexts/AuthContext";
 // import { GoogleOAuthButton } from "../oAuth/GoogleOAuthButton";
 
 type LoginFormState = {
@@ -83,7 +83,7 @@ export function LoginForm({
 }: React.ComponentProps<"form">) {
     const [state, dispatch] = useReducer(reducer, initialState);
     const navigate = useNavigate();
-    const auth = useAuth();
+    const { login } = useAuth();
 
     const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -127,7 +127,7 @@ export function LoginForm({
                 dispatch({
                     type: "SUBMIT_SUCCESS",
                 }); 
-                auth.setAccessToken((responseData).accessToken ?? null);
+                login(responseData.accessToken!);
                 navigate("/dashboard");
             } else {
                 dispatch({
