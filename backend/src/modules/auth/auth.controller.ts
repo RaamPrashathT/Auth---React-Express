@@ -114,4 +114,6 @@ export const authController = {
                 .json({ success: false, message: "Internal server error: " + error});
         }
     },
+
+    
 };

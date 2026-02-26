@@ -14,7 +14,7 @@ import { useReducer } from "react";
 import { useNavigate } from "react-router-dom";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuth } from "../../contexts/AuthContext";
-// import { GoogleOAuthButton } from "../oAuth/GoogleOAuthButton";
+import { GoogleOAuthButton } from "./GoogleOAuthButton";
 
 type LoginFormState = {
     email: string;
@@ -214,7 +214,7 @@ export function LoginForm({
 
                 <FieldSeparator>Or continue with</FieldSeparator>
                 <Field>
-                    {/* <GoogleOAuthButton/> */}
+                    <GoogleOAuthButton/>
                     <FieldDescription className="text-center">
                         Don{"'"}t have an account?{" "}
                         <a
