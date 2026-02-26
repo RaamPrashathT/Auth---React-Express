@@ -106,7 +106,7 @@ export const OAuthGoogleCallback = async (
                             provider: "google",
                             providerAccountID: validatedProfile.data.sub,
                             userId: existingUser.id,
-                        }
+                        },
                     });
                     user = existingUser;
                 } else {
@@ -118,43 +118,51 @@ export const OAuthGoogleCallback = async (
                             accounts: {
                                 create: {
                                     provider: "google",
-                                    providerAccountID: validatedProfile.data.sub,
-                                    
-                                }
-                            }
-                        }
+                                    providerAccountID:
+                                        validatedProfile.data.sub,
+                                },
+                            },
+                        },
                     });
                 }
             }
             const accessToken = await createAccessToken({
-                    userId: user.id,
-                    email: user.email,
-                    tokenType: "access",
-                });
+                userId: user.id,
+                email: user.email,
+                tokenType: "access",
+            });
 
-                const refreshToken = await createAccessToken({
-                    userId: user.id,
-                    email: user.email,
-                    tokenType: "refresh",
-                });
+            const refreshToken = await createAccessToken({
+                userId: user.id,
+                email: user.email,
+                tokenType: "refresh",
+            });
 
-                response.cookie("refreshToken", refreshToken, {
-                    httpOnly: true,
-                    secure: false,
-                    sameSite: "lax",
-                    maxAge: 7 * 24 * 60 * 60 * 1000,
-                    path: "/",
-                });
+            response.cookie("refreshToken", refreshToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: "lax",
+                maxAge: 7 * 24 * 60 * 60 * 1000,
+                path: "/",
+            });
 
-                return response.redirect(`http://localhost:5173/oauth-success#access_token=${accessToken}`);
+            response.cookie("accessToken", accessToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: "lax",
+                maxAge: 10 * 60 * 1000,
+                path: "/",
+            });
 
+            return response.redirect(
+                "http://localhost:5173/dashboard",
+            );
         } catch (error) {
             return response.status(500).json({
                 success: false,
                 message: "Database error: " + error,
             });
         }
-
     } catch (error) {
         return response.status(500).json({
             success: false,

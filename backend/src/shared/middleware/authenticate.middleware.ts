@@ -8,8 +8,7 @@ export const authenticate = async (
 ) => {
     try {
         console.log("Authenticating request...");
-        const authHeader = request.headers.authorization;
-        const token = authHeader?.split(" ")[1];
+        const token = request.cookies.accessToken;
 
         if (!token) {
             return response

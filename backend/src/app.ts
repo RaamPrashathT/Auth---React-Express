@@ -3,6 +3,8 @@ import authRouter from "./modules/auth/auth.routes.js";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import { userRouter } from "./modules/user/user.routes.js";
+import dotenv from "dotenv";
+dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 

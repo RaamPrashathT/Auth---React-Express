@@ -52,10 +52,17 @@ export const authController = {
                 path: "/",
             });
 
+            response.cookie("accessToken", accessToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: "lax",
+                maxAge: 10 * 60 * 1000,
+                path: "/",
+            });
+
             return response.status(200).json({
                 success: true,
                 message: "Login successful",
-                accessToken,
             });
         } catch (error) {
             return response.status(500).json({
@@ -67,9 +74,10 @@ export const authController = {
 
     async refresh(request: Request, response: Response) {
         try {
+            console.log("Cookies object:", request.cookies);
+            console.log("Raw cookie header:", request.headers.cookie);
             const refreshToken = request.cookies.refreshToken;
             const verified = await verifyRefreshToken(refreshToken);
-
             if (!verified) {
                 return response.status(401).json({
                     success: false,
@@ -83,10 +91,17 @@ export const authController = {
                 tokenType: "access",
             });
 
+            response.cookie("accessToken", newAccessToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: "lax",
+                maxAge: 10 * 60 * 1000,
+                path: "/",
+            });
+
             return response.status(200).json({
                 success: true,
                 message: "Access token refreshed",
-                accessToken: newAccessToken,
             });
         } catch (error) {
             return response.status(500).json({
@@ -104,6 +119,14 @@ export const authController = {
                 sameSite: "lax",
                 path: "/",
             });
+
+            response.clearCookie("accessToken", {
+                httpOnly: true,
+                secure: false,
+                sameSite: "lax",
+                path: "/",
+            });
+
             return response.status(200).json({
                 success: true,
                 message: "Logout successful",
@@ -111,9 +134,10 @@ export const authController = {
         } catch (error) {
             return response
                 .status(500)
-                .json({ success: false, message: "Internal server error: " + error});
+                .json({
+                    success: false,
+                    message: "Internal server error: " + error,
+                });
         }
     },
-
-    
 };

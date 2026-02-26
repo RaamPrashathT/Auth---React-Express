@@ -1,20 +1,22 @@
 import { jwtVerify, SignJWT } from "jose";
 import { tokenSchema } from "../types.js";
 
-const access_secret = new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET);
-const refresh_secret = new TextEncoder().encode(process.env.REFRESH_TOKEN_SECRET);
 
 type TokenType = "access" | "refresh";
 
 export const createAccessToken = async (payload: { userId: string, email: string, tokenType: TokenType}) => {
+    const access_secret = new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET);
+
     return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
-        .setExpirationTime("1m")
+        .setExpirationTime("10m")
         .sign(access_secret);
 }
 
 export const createRefreshToken = async (payload: { userId: string, email: string, tokenType: TokenType}) => {
+    const refresh_secret = new TextEncoder().encode(process.env.REFRESH_TOKEN_SECRET);
+
     return await new SignJWT(payload)
         .setProtectedHeader({ alg: "HS256" })
         .setIssuedAt()
@@ -23,6 +25,7 @@ export const createRefreshToken = async (payload: { userId: string, email: strin
 }
 
 export const verifyAccessToken = async (token: string) => {
+    const access_secret = new TextEncoder().encode(process.env.ACCESS_TOKEN_SECRET);
     try {
         const { payload } = await jwtVerify(token, access_secret);
         
@@ -40,6 +43,8 @@ export const verifyAccessToken = async (token: string) => {
 }
 
 export const verifyRefreshToken = async (token: string) => {
+    const refresh_secret = new TextEncoder().encode(process.env.REFRESH_TOKEN_SECRET);
+
     try {
         const { payload } = await jwtVerify(token, refresh_secret);
         const parsed = tokenSchema.safeParse(payload);
@@ -51,6 +56,7 @@ export const verifyRefreshToken = async (token: string) => {
         }
         return parsed.data;
     } catch (error) {
+        console.error("Error verifying refresh token:", error);
         throw new Error("Invalid refresh token: " + error);
     }
 }
