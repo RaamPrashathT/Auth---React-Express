@@ -72,6 +72,13 @@ export const authController = {
         }
     },
 
+    async me(request: Request, response: Response) {
+        return response.status(200).json({
+            success: true,
+            message: "User authenticated",
+        })
+    },
+
     async refresh(request: Request, response: Response) {
         try {
             console.log("Cookies object:", request.cookies);
