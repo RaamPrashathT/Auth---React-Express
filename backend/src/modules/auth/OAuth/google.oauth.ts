@@ -25,8 +25,6 @@ export const OAuthGoogleCallback = async (
         `oauth_state:${state as string}`,
     );
 
-    console.log("State from Google:", state);
-    console.log("Verifier found in Redis:", savedCodeVerifier);
 
     if (!savedCodeVerifier) {
         return response

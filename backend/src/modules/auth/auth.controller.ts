@@ -81,8 +81,6 @@ export const authController = {
 
     async refresh(request: Request, response: Response) {
         try {
-            console.log("Cookies object:", request.cookies);
-            console.log("Raw cookie header:", request.headers.cookie);
             const refreshToken = request.cookies.refreshToken;
             const verified = await verifyRefreshToken(refreshToken);
             if (!verified) {

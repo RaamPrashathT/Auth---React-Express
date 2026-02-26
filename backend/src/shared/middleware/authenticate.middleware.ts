@@ -7,7 +7,6 @@ export const authenticate = async (
     next: NextFunction,
 ) => {
     try {
-        console.log("Authenticating request...");
         const token = request.cookies.accessToken;
 
         if (!token) {

@@ -3,7 +3,7 @@ import { FcGoogle } from "react-icons/fc";
 
 export const GoogleOAuthButton = () => {
     const handleLogin = async() => {
-        window.location.href = "http://localhost:5000/auth/google";
+        globalThis.location.href = "http://localhost:5000/auth/google";
     };
 
     return (
